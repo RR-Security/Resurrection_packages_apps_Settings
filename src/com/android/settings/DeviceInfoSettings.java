@@ -17,6 +17,9 @@
 package com.android.settings;
 
 import android.app.Activity;
+import android.app.AlertDialog;
+import android.content.ClipData;
+import android.content.ClipboardManager;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.ApplicationInfo;
@@ -121,7 +124,7 @@ public class DeviceInfoSettings extends SettingsPreferenceFragment implements In
             try {
                 SimpleDateFormat template = new SimpleDateFormat("yyyy-MM-dd");
                 Date patchDate = template.parse(patch);
-                String format = DateFormat.getBestDateTimePattern(Locale.getDefault(), "dMMMMyyyy");
+                String format = DateFormat.getBestDateTimePattern(Locale.getDefault(), "MMMMyyyy");
                 patch = DateFormat.format(format, patchDate).toString();
             } catch (ParseException e) {
                 // broken parse; fall through and use the raw string
@@ -141,8 +144,10 @@ public class DeviceInfoSettings extends SettingsPreferenceFragment implements In
         findPreference(KEY_MOD_VERSION).setEnabled(true);
         setValueSummary(KEY_MOD_BUILD_DATE, "ro.build.date");
         setExplicitValueSummary(KEY_MOD_API_LEVEL, constructApiLevelString());
-        findPreference(KEY_MOD_API_LEVEL).setEnabled(false);
-	getPreferenceScreen().removePreference(findPreference(KEY_MOD_API_LEVEL));
+        findPreference(KEY_MOD_API_LEVEL).setEnabled(true);
+        findPreference(KEY_MOD_BUILD_DATE).setEnabled(true);
+        findPreference(KEY_SECURITY_PATCH).setEnabled(true);
+
         if (!SELinux.isSELinuxEnabled()) {
             String status = getResources().getString(R.string.selinux_status_disabled);
             setStringSummary(KEY_SELINUX_STATUS, status);
@@ -314,6 +319,13 @@ public class DeviceInfoSettings extends SettingsPreferenceFragment implements In
             if (b.getBoolean(CarrierConfigManager.KEY_CI_ACTION_ON_SYS_UPDATE_BOOL)) {
                 ciActionOnSysUpdate(b);
             }
+        } else if (preference.getKey().equals(KEY_SECURITY_PATCH)) {
+            new AlertDialog.Builder(getActivity())
+                .setTitle(R.string.security_patch)
+                .setIcon(android.R.drawable.ic_dialog_alert)
+                .setMessage(R.string.security_patch_legacy_info)
+                .setNegativeButton(R.string.cancel, null)
+                .create().show();
         }
         return super.onPreferenceTreeClick(preferenceScreen, preference);
     }
