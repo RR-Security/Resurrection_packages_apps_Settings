@@ -128,13 +128,6 @@
             android:title="@string/wakelock_blocker_title"
             />
 
-     <!-- System APP Remover -->
-    <PreferenceScreen
-            android:id="@+id/system_app_remover"
-            android:title="@string/system_app_remover"
-            android:fragment="com.android.settings.rr.fragments.SystemappRemover" />
-
-
         <!-- Advanced options -->
         <PreferenceScreen
                 android:key="advanced_sound_settings"
